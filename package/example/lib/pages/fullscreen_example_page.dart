@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_meedu_videoplayer/meedu_player.dart';
 
 const videos = [
@@ -34,6 +35,7 @@ class _FullscreenExamplePageState extends State<FullscreenExamplePage> {
 
   final MeeduPlayerController _meeduPlayerController = MeeduPlayerController(
       colorTheme: Colors.blue,
+      responsive: Responsive(buttonsSizeRelativeToScreen: 100),
       enabledButtons: const EnabledButtons(rewindAndfastForward: false));
   ValueNotifier<int> currentIndex = ValueNotifier(0);
   DataSource? _dataSource;
@@ -45,7 +47,9 @@ class _FullscreenExamplePageState extends State<FullscreenExamplePage> {
     super.initState();
     _subscription = _meeduPlayerController.onFullscreenChanged.listen(
       (bool isFullscreen) {
+        print("fullscreen closed :: ${isFullscreen}");
         if (!isFullscreen) {
+          //
           // if the fullscreen page was closed
           _dataSource = null;
         }
@@ -60,28 +64,28 @@ class _FullscreenExamplePageState extends State<FullscreenExamplePage> {
     super.dispose();
   }
 
-  Widget get nextButton {
-    return ValueListenableBuilder(
-      valueListenable: currentIndex,
-      builder: (_, int index, __) {
-        final hasNext = index < videos.length - 1;
-        return TextButton(
-          onPressed: hasNext
-              ? () {
-                  currentIndex.value++;
-                  _set();
-                }
-              : null,
-          child: Text(
-            "NEXT VIDEO",
-            style: TextStyle(
-              color: Colors.white.withOpacity(hasNext ? 1 : 0.2),
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // Widget get nextButton {
+  //   return ValueListenableBuilder(
+  //     valueListenable: currentIndex,
+  //     builder: (_, int index, __) {
+  //       final hasNext = index < videos.length - 1;
+  //       return TextButton(
+  //         onPressed: hasNext
+  //             ? () {
+  //                 currentIndex.value++;
+  //                 _set();
+  //               }
+  //             : null,
+  //         child: Text(
+  //           "NEXT VIDEO",
+  //           style: TextStyle(
+  //             color: Colors.white.withOpacity(hasNext ? 1 : 0.2),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget get header {
     return ValueListenableBuilder(
@@ -131,7 +135,7 @@ class _FullscreenExamplePageState extends State<FullscreenExamplePage> {
         dataSource: _dataSource!,
         autoplay: true,
         header: header,
-        bottomRight: nextButton,
+        // bottomRight: nextButton,
       );
     } else {
       // update the player with new datasource and it doesn't re-launch the player

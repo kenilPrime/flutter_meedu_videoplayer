@@ -4,7 +4,7 @@ import 'package:flutter_meedu_videoplayer/meedu_player.dart';
 
 class FullscreenButton extends StatelessWidget {
   final double size;
-  const FullscreenButton({Key? key, this.size = 30}) : super(key: key);
+  const FullscreenButton({Key? key, this.size = 10}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +27,7 @@ class FullscreenButton extends StatelessWidget {
           iconPath: iconPath,
           customIcon: customIcon,
           onPressed: () {
+            print("this is call :: 11");
             _.toggleFullScreen(context);
           },
         );

@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_meedu/rx.dart';
 import 'package:flutter_meedu_videoplayer/src/helpers/desktop_pip_bk.dart';
 import 'package:flutter_meedu_videoplayer/src/native/pip_manager.dart';
@@ -16,7 +17,8 @@ import 'package:volume_controller/volume_controller.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:flutter_meedu_videoplayer/src/helpers/durations.dart' as meeduDurations;
+import 'package:flutter_meedu_videoplayer/src/helpers/durations.dart'
+    as meeduDurations;
 
 /// An enumeration of the different styles that can be applied to controls, such
 /// as buttons and icons and layouts.
@@ -62,6 +64,7 @@ class MeeduPlayerController {
   final Color colorTheme;
   final bool controlsEnabled;
   String? _errorText;
+
   String? get errorText => _errorText;
   Widget? loadingWidget, header, bottomRight, customControls, videoOverlay;
 
@@ -152,47 +155,58 @@ class MeeduPlayerController {
 
   /// [mute] is true if the player is muted
   Rx<bool> get mute => _mute;
+
   Stream<bool> get onMuteChanged => _mute.stream;
 
   /// [fullscreen] is true if the player is in fullscreen mode
   Rx<bool> get fullscreen => _fullscreen;
+
   Stream<bool> get onFullscreenChanged => _fullscreen.stream;
 
   /// [showControls] is true if the player controls are visible
   Rx<bool> get showControls => _showControls;
+
   Stream<bool> get onShowControlsChanged => _showControls.stream;
 
   /// [showSwipeDuration] is true if the player controls are visible
   Rx<bool> get showSwipeDuration => _showSwipeDuration;
+
   Stream<bool> get onShowSwipeDurationChanged => _showSwipeDuration.stream;
 
   /// [showSwipeDuration] is true if the player controls are visible
   Rx<bool> get showVolumeStatus => _showVolumeStatus;
+
   Stream<bool> get onShowVolumeStatusChanged => _showVolumeStatus.stream;
 
   /// [showSwipeDuration] is true if the player controls are visible
   Rx<bool> get showBrightnessStatus => _showBrightnessStatus;
+
   Stream<bool> get onShowBrightnessStatusChanged =>
       _showBrightnessStatus.stream;
 
   /// [swipeDuration] is true if the player controls are visible
   Rx<int> get swipeDuration => _swipeDuration;
+
   Stream<int> get onSwipeDurationChanged => _swipeDuration.stream;
 
   /// [volume] is true if the player controls are visible
   Rx<double> get volume => _currentVolume;
+
   Stream<double> get onVolumeChanged => _currentVolume.stream;
 
   /// [brightness] is true if the player controls are visible
   Rx<double> get brightness => _currentBrightness;
+
   Stream<double> get onBrightnessChanged => _currentBrightness.stream;
 
   /// [sliderPosition] the video slider position
   Rx<Duration> get sliderPosition => _sliderPosition;
+
   Stream<Duration> get onSliderPositionChanged => _sliderPosition.stream;
 
   /// [bufferedLoaded] buffered Loaded for network resources
   Rx<List<DurationRange>> get buffered => _buffered;
+
   Stream<List<DurationRange>> get onBufferedChanged => _buffered.stream;
 
   /// [videoPlayerController] instace of VideoPlayerController
@@ -208,6 +222,7 @@ class MeeduPlayerController {
   bool get autoplay => _autoPlay;
 
   Rx<bool> get closedCaptionEnabled => _closedCaptionEnabled;
+
   Stream<bool> get onClosedCaptionEnabledChanged =>
       _closedCaptionEnabled.stream;
 
@@ -240,6 +255,7 @@ class MeeduPlayerController {
 
   /// [isInPipMode] is true if pip mode is enabled
   Rx<bool> get isInPipMode => _pipManager.isInPipMode;
+
   Stream<bool?> get onPipModeChanged => _pipManager.isInPipMode.stream;
 
   Rx<bool> isBuffering = false.obs;
@@ -1005,7 +1021,15 @@ class MeeduPlayerController {
   /// Parameters:
   ///   - context: A `BuildContext` object used to access the current widget tree context.
   void toggleFullScreen(BuildContext context) {
-    setFullScreen(!fullscreen.value, context);
+    if (fullscreen.value == true) {
+      fullscreen.value = false;
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    } else {
+      fullscreen.value = true;
+      SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+    }
+
+    // setFullScreen(!fullscreen.value, context);
   }
 
   /// Sets the full-screen mode of the application window.
