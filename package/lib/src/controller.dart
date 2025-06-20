@@ -1021,17 +1021,17 @@ class MeeduPlayerController {
   /// Parameters:
   ///   - context: A `BuildContext` object used to access the current widget tree context.
   void toggleFullScreen(BuildContext context) {
-    if (fullscreen.value == true) {
-      fullscreen.value = false;
-      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    } else {
+    final orientation = MediaQuery.of(context).orientation;
+    if (orientation == Orientation.portrait) {
       fullscreen.value = true;
       SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+    } else {
+      fullscreen.value = false;
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     }
-
+    print("fullscreen.value :: ${fullscreen.value}");
     // setFullScreen(!fullscreen.value, context);
   }
-
   /// Sets the full-screen mode of the application window.
   ///
   /// If the `fullscreen` parameter is `true`, sets the full-screen mode of the application
